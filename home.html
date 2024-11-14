@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coca-Cola</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
+
+      nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: #b50009;
+        padding: 1rem;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+      }
+
+      nav a {
+        color: #fefefe;
+        text-decoration: none;
+        margin: 0 1rem;
+        font-weight: bold;
+      }
+
+      .home {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        padding: 2rem;
+        background: linear-gradient(45deg, #b50009, #ff0008);
+        color: white;
+      }
+
+      .home-content {
+        max-width: 550px;
+      }
+
+      .logo {
+        transform: rotate(0deg);
+        margin-bottom: 0;
+      }
+
+      .home-content img {
+        font-size: 4rem;
+        margin-top: -100px;
+        margin-bottom: -150px;
+        margin-left: 40px;
+        transform: rotate(0deg);
+      }
+
+      .home-content p {
+        font-size: 1.3rem;
+        line-height: 1.5;
+        margin-left: 97px;
+        margin-right: -70px;
+      }
+
+      .home img {
+        max-width: 500px;
+        transform: rotate(0deg);
+        transition: transform 0.3s;
+      }
+
+      .home img:hover {
+        transform: rotate(0deg) scale(1.1);
+      }
+
+      .rotated-icon img {
+        max-width: 500px;
+        transform: rotate(-15deg);
+        transition: transform 0.3s;
+        margin-left: -60px;
+      }
+
+      .rotated-icon img:hover {
+        transform: rotate(0deg) scale(1.1);
+      }
+
+      .products {
+        padding: 4rem 2rem;
+        background: #b50009;
+      }
+
+      .products h1 {
+        text-align: center;
+        color: white;
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      }
+
+      .products p {
+        text-align: center;
+        color: white;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+        font-style: italic;
+      }
+
+      .card-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+      }
+
+      .card {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transform: translateY(50px) scale(1);
+        opacity: 0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px) scale(2);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+      }
+
+      .card img {
+        width: 200px;
+        height: 200px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+      }
+
+      .card h4 {
+        color: #e61e27;
+        margin-bottom: 0.5rem;
+      }
+
+      .interactive-section {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #b50009, #ff0008);
+        padding: 4rem 2rem;
+        text-align: center;
+      }
+
+      .bubble-container {
+        position: relative;
+        height: 500px;
+        overflow: hidden;
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .bubble-container h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        margin-top: 1rem;
+      }
+
+      .bubble-container p {
+        color: white;
+        font-size: 1.2rem;
+        text-align: center;
+        max-width: 600px;
+      }
+
+      .bubble {
+        position: absolute;
+        background: rgba(255, 253, 254, 0.31);
+        border-radius: 50%;
+        animation: float 8s infinite;
+      }
+
+      footer {
+        background: #b50009;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+      }
+
+      footer p {
+        margin: 0;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(400px);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: translateY(-100px);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="#home">Home</a>
+      <a href="#products">Products</a>
+      <a href="#interactive">Experience</a>
+    </nav>
+
+    <section id="home" class="home">
+      <div class="home-content">
+        <img src="white logo.png" alt="Coca-Cola Logo" class="logo" />
+        <p>
+          Refresh your world with Coca-Cola, the iconic beverage that has
+          brought happiness and refreshment to people around the globe since
+          1886. Experience the perfect blend of unique taste and sparkling
+          bubbles that make every moment special.
+        </p>
+      </div>
+      <div class="rotated-icon">
+        <img src="3d coke.png" alt="Coca-Cola Can" />
+      </div>
+    </section>
+
+    <section id="products" class="products">
+      <h1>Our Product</h1>
+      <p>Hey, what's your go-to product? Got any favorites?</p>
+      <div class="card-container">
+        <div class="card">
+          <img src="zero big.png" alt="Coca-Cola Zero" />
+          <h4>Coca-Cola Zero</h4>
+        </div>
+        <div class="card">
+          <img src="classic.png" alt="Coca-Cola Classi" />
+          <h4>Coca-Cola Classic</h4>
+        </div>
+        <div class="card">
+          <img src="y3000.png" alt="Coca-Cola Y3000" />
+          <h4>Coca-Cola Y3000</h4>
+        </div>
+        <div class="card">
+          <img src="light.png" alt="Coca-Cola Light" />
+          <h4>Coca-Cola Light</h4>
+        </div>
+      </div>
+    </section>
+
+    <section id="interactive" class="interactive-section">
+      <div class="bubble-container" id="bubbleContainer">
+        <h1>Explore Your Spirit with Coca-Cola</h1>
+        <p>
+          Don't forget to drink
+          <span style="font-weight: bold">Coca-Cola</span> to charge your energy
+          and mood
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2024 Coca-Cola | @hadinugross_</p>
+    </footer>
+
+    <script>
+      // Smooth scroll
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth",
+          });
+        });
+      });
+
+      // Animate cards on scroll
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.utils.toArray(".card").forEach((card) => {
+        gsap.to(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom-=100",
+            toggleActions: "play none none reverse",
+          },
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+        });
+      });
+
+      // Create bubbles
+      function createBubble() {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+
+        const size = Math.random() * 50 + 20;
+        bubble.style.width = `${size}px`;
+        bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random() * 100}%`;
+
+        document.getElementById("bubbleContainer").appendChild(bubble);
+
+        bubble.addEventListener("animationend", () => {
+          bubble.remove();
+        });
+      }
+
+      setInterval(createBubble, 500);
+    </script>
+  </body>
+</html>
