@@ -14,7 +14,7 @@ $conn = $database->getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
-    
+
     // Tambahkan validasi awal
     if (!$data) {
         echo json_encode(['success' => false, 'message' => 'Invalid JSON data received']);
@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         case 'add':
             $productId = intval($data['product_id']);
             $quantity = intval($data['quantity']);
-        
+
             if (!$productId) {
                 echo json_encode(['success' => false, 'message' => 'Invalid product ID']);
                 exit();
             }
-        
+
             try {
                 // Cek dulu apakah produk ada
                 $stmt = $conn->prepare("SELECT id FROM products WHERE id = ?");
@@ -45,12 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     echo json_encode(['success' => false, 'message' => 'Product not found']);
                     exit();
                 }
-        
+
                 // Cek apakah sudah ada di cart
                 $stmt = $conn->prepare("SELECT id, quantity FROM cart WHERE user_id = ? AND product_id = ?");
                 $stmt->execute([$_SESSION['user_id'], $productId]);
                 $existingItem = $stmt->fetch();
-                
+
                 if ($existingItem) {
                     // Update quantity jika sudah ada
                     $newQuantity = $existingItem['quantity'] + $quantity;
@@ -61,12 +61,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $conn->prepare("INSERT INTO cart (user_id, product_id, quantity) VALUES (?, ?, ?)");
                     $stmt->execute([$_SESSION['user_id'], $productId, $quantity]);
                 }
-                
+
                 // Ambil total items setelah update
                 $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = ?");
                 $stmt->execute([$_SESSION['user_id']]);
                 $result = $stmt->fetch();
-                
+
                 echo json_encode([
                     'success' => true,
                     'message' => 'Item added to cart',
@@ -125,4 +125,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
 }
-?>

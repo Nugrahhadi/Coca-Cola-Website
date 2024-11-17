@@ -2,16 +2,17 @@
 session_start();
 require_once 'config.php';
 
-if(!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit();
 }
 
 // Fungsi untuk mendapatkan items dari cart
-function getCartItems() {
+function getCartItems()
+{
     $database = new Database();
     $conn = $database->getConnection();
-    
+
     try {
         $stmt = $conn->prepare("
             SELECT c.id as cart_id, p.id as product_id, p.name, p.price, c.quantity, p.image_url
@@ -21,7 +22,7 @@ function getCartItems() {
         ");
         $stmt->execute([$_SESSION['user_id']]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch(PDOException $e) {
+    } catch (PDOException $e) {
         return [];
     }
 }
@@ -32,6 +33,7 @@ $totalAmount = 0;
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Shopping Cart - Coca Cola</title>
     <style>
@@ -59,7 +61,7 @@ $totalAmount = 0;
             margin-bottom: 1rem;
             background: white;
             border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .cart-item img {
@@ -127,24 +129,25 @@ $totalAmount = 0;
         }
     </style>
 </head>
+
 <body>
     <div class="cart-page">
         <h2>Your Shopping Cart</h2>
-        
-        <?php if(empty($cartItems)): ?>
+
+        <?php if (empty($cartItems)): ?>
             <div class="empty-cart">
                 <p>Your cart is empty</p>
                 <a href="product.php" class="back-to-shop">Continue Shopping</a>
             </div>
         <?php else: ?>
             <div class="cart-items">
-                <?php foreach($cartItems as $item): 
+                <?php foreach ($cartItems as $item):
                     $itemTotal = $item['price'] * $item['quantity'];
                     $totalAmount += $itemTotal;
                 ?>
                     <div class="cart-item">
-                        <img src="<?php echo htmlspecialchars($item['image_url']); ?>" 
-                             alt="<?php echo htmlspecialchars($item['name']); ?>">
+                        <img src="<?php echo htmlspecialchars($item['image_url']); ?>"
+                            alt="<?php echo htmlspecialchars($item['name']); ?>">
                         <div class="item-details">
                             <h3><?php echo htmlspecialchars($item['name']); ?></h3>
                             <p>Price: Rp <?php echo number_format($item['price'], 0, ',', '.'); ?></p>
@@ -161,7 +164,7 @@ $totalAmount = 0;
                     </div>
                 <?php endforeach; ?>
             </div>
-            
+
             <div class="cart-total">
                 <h3>Total: Rp <?php echo number_format($totalAmount, 0, ',', '.'); ?></h3>
                 <button class="checkout-btn" onclick="checkout()">Processed to Checkout</button>
@@ -171,48 +174,48 @@ $totalAmount = 0;
 
     <script>
         function updateQuantity(cartId, newQuantity) {
-            if(newQuantity < 1) {
+            if (newQuantity < 1) {
                 removeItem(cartId);
                 return;
             }
 
             fetch('cart_operations.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    action: 'update',
-                    cart_id: cartId,
-                    quantity: newQuantity
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    location.reload();
-                }
-            });
-        }
-
-        function removeItem(cartId) {
-            if(confirm('Are you sure you want to remove this item?')) {
-                fetch('cart_operations.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        action: 'remove',
-                        cart_id: cartId
+                        action: 'update',
+                        cart_id: cartId,
+                        quantity: newQuantity
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if(data.success) {
+                    if (data.success) {
                         location.reload();
                     }
                 });
+        }
+
+        function removeItem(cartId) {
+            if (confirm('Are you sure you want to remove this item?')) {
+                fetch('cart_operations.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'remove',
+                            cart_id: cartId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        }
+                    });
             }
         }
 
@@ -222,4 +225,5 @@ $totalAmount = 0;
         }
     </script>
 </body>
+
 </html>
