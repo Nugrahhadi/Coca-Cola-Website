@@ -24,6 +24,9 @@ $isLoggedIn = isset($_SESSION['user_id']);
     <title>Coca-Cola</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         * {
         margin: 0;
@@ -52,7 +55,8 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
       .nav-links {
         display: flex;
-        gap: 1rem;
+        align-items: center;
+        gap: 0.2rem;
       }
 
       nav a {
@@ -60,7 +64,26 @@ $isLoggedIn = isset($_SESSION['user_id']);
         text-decoration: none;
         font-weight: bold;
         margin-right: 30px;
-      }
+        font-size: 16px;
+        padding: 5px 10px;
+        transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            padding: 8px 16px;
+            border: 2px solid white; 
+            border-radius: 20px;
+            background-color: transparent; 
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background-color: white;
+            color: #b50009;
+            border-color: #b50009;
+        }
 
       .home {
         height: 100vh;
@@ -334,19 +357,19 @@ $isLoggedIn = isset($_SESSION['user_id']);
       }
 
       .add-to-cart-btn {
-    background: #b50009;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 1rem;
-    transition: background 0.3s;
-    }
+        background: #b50009;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 1rem;
+        transition: background 0.3s;
+        }
 
-    .add-to-cart-btn:hover {
-    background: #8b0007;
-    }
+        .add-to-cart-btn:hover {
+        background: #8b0007;
+        }
 
       .total-items {
         text-align: center;
@@ -354,6 +377,24 @@ $isLoggedIn = isset($_SESSION['user_id']);
         margin-top: 2rem;
         color: #b50009;
       }
+
+      .custom-confirm-button {
+    background-color: #b50009 !important;
+    color: white !important;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+    .custom-cancel-button {
+    background-color: #ddd !important;
+    color: #333 !important;
+    border-radius: 20px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
 
       footer {
         background: #b50009;
@@ -399,7 +440,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 <a href="cart.php">Cart (<span id="cart-count">0</span>)</a>
                 <a href="logout.php">Logout</a>
             <?php else: ?>
-                <a href="login.php">Login</a>
+                <a href="login.php" class="login-btn">Login</a>
             <?php endif; ?>
         </div>
     </nav>
@@ -731,43 +772,67 @@ function decreaseQuantity(productId, section) {
 function addToCart(productId) {
     // Check if user is logged in
     <?php if (!$isLoggedIn): ?>
-    if (confirm('You need to login first. Go to login page?')) {
-        window.location.href = 'login.php';
-    }
+    Swal.fire({
+        title: 'Not Logged In',
+        text: 'You need to login first to add items to the cart.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Go to Login',
+        cancelButtonText: 'Cancel',
+        customClass: {
+                confirmButton: 'custom-confirm-button',
+                cancelButton: 'custom-cancel-button'
+            }
+        //reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'login.php';
+        }
+    });
     return;
     <?php endif; ?>
 
-    const quantity = cartQuantities[productId];
-    
-    if(quantity > 0) {
-        fetch('cart_operations.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                action: 'add',
-                product_id: productId,
-                quantity: quantity
-            })
+    // Logic to add product to cart (if logged in)
+    fetch('cart_operations.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            action: 'add',
+            product_id: productId,
+            quantity: 1
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data.success) {
-                alert('Added to cart successfully!');
-                cartQuantities[productId] = 0;
-                updateQuantityDisplays(productId, 0);
-                updateCartDisplay();
-            } else {
-                alert(data.message || 'Failed to add to cart');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to add to cart');
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            Swal.fire({
+                title: 'Success',
+                text: 'Item added to cart!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            // Update cart count dynamically
+            updateCartCount();
+        } else {
+            Swal.fire({
+                title: 'Error',
+                text: data.message || 'Failed to add item to cart.',
+                icon: 'error',
+            });
+        }
+    })
+    .catch((error) => {
+        Swal.fire({
+            title: 'Error',
+            text: 'An unexpected error occurred.',
+            icon: 'error',
         });
-    }
+    });
 }
+
 
 function updateCartDisplay() {
     fetch('cart_operations.php?action=get')
