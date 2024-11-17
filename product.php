@@ -780,10 +780,10 @@ function addToCart(productId) {
         confirmButtonText: 'Go to Login',
         cancelButtonText: 'Cancel',
         customClass: {
-                confirmButton: 'custom-confirm-button',
-                cancelButton: 'custom-cancel-button'
-            }
-        //reverseButtons: true
+            confirmButton: 'custom-confirm-button',
+            cancelButton: 'custom-cancel-button'
+        },
+        reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
             window.location.href = 'login.php';
@@ -792,7 +792,8 @@ function addToCart(productId) {
     return;
     <?php endif; ?>
 
-    // Logic to add product to cart (if logged in)
+    const quantity = cartQuantities[productId] || 1;
+
     fetch('cart_operations.php', {
         method: 'POST',
         headers: {
@@ -801,38 +802,40 @@ function addToCart(productId) {
         body: JSON.stringify({
             action: 'add',
             product_id: productId,
-            quantity: 1
+            quantity: quantity
         })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
             Swal.fire({
-                title: 'Success',
-                text: 'Item added to cart!',
+                title: 'Success!',
+                text: 'Item added to cart successfully',
                 icon: 'success',
                 timer: 1500,
                 showConfirmButton: false
             });
-            // Update cart count dynamically
-            updateCartCount();
+            
+            // Update cart count
+            const cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) {
+                cartCountElement.textContent = data.total;
+            }
+            
+            // Reset quantity
+            updateQuantityDisplays(productId, 0);
         } else {
-            Swal.fire({
-                title: 'Error',
-                text: data.message || 'Failed to add item to cart.',
-                icon: 'error',
-            });
+            throw new Error(data.message || 'Failed to add item to cart');
         }
     })
-    .catch((error) => {
+    .catch(error => {
         Swal.fire({
-            title: 'Error',
-            text: 'An unexpected error occurred.',
-            icon: 'error',
+            title: 'Error!',
+            text: error.message,
+            icon: 'error'
         });
     });
 }
-
 
 function updateCartDisplay() {
     fetch('cart_operations.php?action=get')

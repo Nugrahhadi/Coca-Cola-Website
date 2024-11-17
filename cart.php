@@ -164,7 +164,7 @@ $totalAmount = 0;
             
             <div class="cart-total">
                 <h3>Total: Rp <?php echo number_format($totalAmount, 0, ',', '.'); ?></h3>
-                <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+                <button class="checkout-btn" onclick="checkout()">Processed to Checkout</button>
             </div>
         <?php endif; ?>
     </div>
