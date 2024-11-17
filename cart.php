@@ -3,7 +3,7 @@ session_start();
 require_once 'config.php';
 
 if(!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
     exit();
 }
 

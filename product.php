@@ -1,14 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
-    exit();
-}
-?>
-
-<?php
 require_once 'config.php';
-
 
 // Buat koneksi database
 $database = new Database();
@@ -19,6 +11,9 @@ $query = "SELECT * FROM products";
 $stmt = $conn->prepare($query);
 $stmt->execute();
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Check if user is logged in
+$isLoggedIn = isset($_SESSION['user_id']);
 ?>
 
 <!DOCTYPE html>
@@ -392,17 +387,21 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <!--Navbar-->
     <nav>
-    <div class="nav-logo">
-        <img src="nav-logo.png" alt="Coca-Cola Logo" />
-    </div>
-    <div class="nav-links">
-        <a href="#home">Home</a>
-        <a href="#products">Products</a>
-        <a href="#interactive">Experience</a>
-        <a href="#shop">Shop</a>
-        <a href="cart.php">Cart (<span id="cart-count">0</span>)</a>
-        <a href="logout.php">Logout</a>
-    </div>
+        <div class="nav-logo">
+            <img src="nav-logo.png" alt="Coca-Cola Logo" />
+        </div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#products">Products</a>
+            <a href="#interactive">Experience</a>
+            <a href="#shop">Shop</a>
+            <?php if ($isLoggedIn): ?>
+                <a href="cart.php">Cart (<span id="cart-count">0</span>)</a>
+                <a href="logout.php">Logout</a>
+            <?php else: ?>
+                <a href="login.php">Login</a>
+            <?php endif; ?>
+        </div>
     </nav>
 
     <!-- Home Section -->
@@ -729,7 +728,15 @@ function decreaseQuantity(productId, section) {
     }
 }
 
-function addToCart(productId, section) {
+function addToCart(productId) {
+    // Check if user is logged in
+    <?php if (!$isLoggedIn): ?>
+    if (confirm('You need to login first. Go to login page?')) {
+        window.location.href = 'login.php';
+    }
+    return;
+    <?php endif; ?>
+
     const quantity = cartQuantities[productId];
     
     if(quantity > 0) {
