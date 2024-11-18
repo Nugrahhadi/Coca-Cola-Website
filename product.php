@@ -416,11 +416,11 @@ $isLoggedIn = isset($_SESSION['user_id']);
             }
 
             20% {
-                opacity: 0.5;
+                opacity: 0.45;
             }
 
             80% {
-                opacity: 0.15;
+                opacity: 0.10;
             }
 
             100% {
