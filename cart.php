@@ -137,7 +137,7 @@ $totalAmount = 0;
         <?php if (empty($cartItems)): ?>
             <div class="empty-cart">
                 <p>Your cart is empty</p>
-                <a href="product.php" class="back-to-shop">Continue Shopping</a>
+                <a href="index.php#shop" class="back-to-shop">Continue Shopping</a>
             </div>
         <?php else: ?>
             <div class="cart-items">

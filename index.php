@@ -398,6 +398,23 @@ $isLoggedIn = isset($_SESSION['user_id']);
             font-size: 14px;
         }
 
+        /* Mobile togle */
+        .mobile-toggle {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 30px;
+            height: 21px;
+        }
+
+        .mobile-toggle span {
+            height: 3px;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+        }
+
         footer {
             background: #b50009;
             color: white;
@@ -428,6 +445,223 @@ $isLoggedIn = isset($_SESSION['user_id']);
                 opacity: 0;
             }
         }
+
+        @media screen and (max-width: 991px) {
+
+            /* Navigation Section */
+            .nav-links {
+                gap: 0.1rem;
+            }
+
+            nav a {
+                margin-right: 15px;
+                font-size: 14px;
+            }
+
+            .nav-logo img {
+                height: 40px;
+                margin-left: 15px;
+            }
+
+            /* Home section */
+            .home {
+                flex-direction: column;
+                height: auto;
+                padding-top: 100px;
+            }
+
+            .home-content {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            .home-content img {
+                margin-left: 0;
+                margin-top: -50px;
+                margin-bottom: -70px;
+            }
+
+            .home-content p {
+                margin-left: 0;
+                margin-right: 0;
+                font-size: 1.2rem;
+            }
+
+            .rotated-icon img {
+                max-width: 400px;
+                margin-left: 0;
+            }
+
+            /* Product cards */
+            .card-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+
+            .card img {
+                width: 150px;
+                height: 150px;
+            }
+
+            /* Shop section */
+            .shop-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+        }
+
+        /* Mobile */
+        @media screen and (max-width: 768px) {
+
+            /* Navigation Section */
+            nav {
+                padding: 0.8rem 0.5rem;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-logo {
+                margin-bottom: 10px;
+            }
+
+            .nav-logo img {
+                height: 35px;
+                margin-left: 0;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            nav a {
+                margin-right: 10px;
+                font-size: 13px;
+                padding: 5px 7px;
+            }
+
+            /* Home section adjustments */
+            .home {
+                padding-top: 120px;
+            }
+
+            .home-content img {
+                margin-top: -30px;
+                margin-bottom: -50px;
+                width: 200px;
+            }
+
+            .home-content p {
+                font-size: 1.1rem;
+                padding: 0 20px;
+            }
+
+            .rotated-icon img {
+                max-width: 300px;
+            }
+
+            /* Product section */
+            .products {
+                padding-top: 80px;
+            }
+
+            .products h1 {
+                font-size: 1.8rem;
+            }
+
+            .products p {
+                font-size: 1.1rem;
+            }
+
+            /* Card container */
+            .card-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card:hover {
+                transform: translateY(-5px) scale(1.05);
+            }
+
+            /* Shop section */
+            .shop-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            /* Modal adjustments */
+            .modal-content {
+                width: 90%;
+                max-width: 350px;
+                padding: 1.5rem;
+            }
+
+            .modal-content img {
+                max-width: 150px;
+            }
+
+            /* Interactive section */
+            .bubble-container h1 {
+                font-size: 2rem;
+            }
+
+            .bubble-container p {
+                font-size: 1rem;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media screen and (max-width: 480px) {
+
+            /* Navigation */
+            nav {
+                padding: 0.7rem 0.3rem;
+            }
+
+            .nav-logo img {
+                height: 30px;
+            }
+
+            nav a {
+                margin-right: 5px;
+                font-size: 12px;
+                padding: 3px 5px;
+            }
+
+            .login-btn {
+                padding: 5px 10px;
+            }
+
+            /* Home section */
+            .home-content img {
+                width: 180px;
+            }
+
+            .home-content p {
+                font-size: 1rem;
+            }
+
+            .rotated-icon img {
+                max-width: 250px;
+            }
+
+            /* Product section */
+            .products h1 {
+                font-size: 1.6rem;
+            }
+
+            /* Modal */
+            .modal-content {
+                padding: 1rem;
+            }
+
+            .close-btn {
+                top: 10px;
+                right: 15px;
+            }
+        }
     </style>
 </head>
 
@@ -437,6 +671,13 @@ $isLoggedIn = isset($_SESSION['user_id']);
         <div class="nav-logo">
             <img src="nav-logo.png" alt="Coca-Cola Logo" />
         </div>
+
+        <div class="mobile-toggle" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
         <div class="nav-links">
             <a href="#home">Home</a>
             <a href="#products">Products</a>
@@ -648,6 +889,12 @@ $isLoggedIn = isset($_SESSION['user_id']);
 
     <script>
         let cartQuantities = {};
+
+        function toggleMobileMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
             anchor.addEventListener("click", function(e) {

@@ -17,15 +17,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
         // Redirect back to previous page or product.php
-        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'product.php';
-        header('Location: product.php');
+        $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'index.php';
+        header('Location: index.php');
         exit();
     } else {
         $error = "Invalid username or password";
     }
 }
 
-$redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'product.php';
+$redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'index.php';
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +78,6 @@ $redirect = isset($_GET['redirect']) ? $_GET['redirect'] : 'product.php';
         button {
             width: 100%;
             box-sizing: border-box;
-            /* Memastikan padding dan border dihitung dalam lebar total */
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ddd;
